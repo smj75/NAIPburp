@@ -1,0 +1,142 @@
+#!/bin/bash
+
+OUT=./host_toc.ps
+
+#
+
+WIDTH=4
+HEIGHT=2.47
+
+TMIN=5e1
+TMAX=4e4
+QMIN=1e-1
+QMAX=3e1
+
+gmt gmtset MAP_FRAME_TYPE plain
+gmt gmtset MAP_FRAME_PEN 0.5p,black
+gmt gmtset MAP_TICK_LENGTH_PRIMARY 0.1c
+gmt gmtset MAP_TICK_LENGTH_SECONDARY 0.05c
+gmt gmtset MAP_LABEL_OFFSET 0.2c
+gmt gmtset FONT_LABEL 10p
+gmt gmtset FONT_ANNOT_PRIMARY 8p
+
+
+
+
+# THE DATA
+
+
+gmt psbasemap -R0/10/0/100 -JX${WIDTH}/${HEIGHT} -Bxa2 -Bya100f50+u"%" -Be -P -K -X10 -Y10 > $OUT
+
+
+gmt psxy -R -JX -Gdarkgray -K -O <<EOF >> $OUT
+>
+0.4 0
+0.4 100
+2.6 100
+2.6 0
+>
+EOF
+
+# DATA FROM AARNES ET AL. J GEOL SOC 2015, FIG 4.
+# FREQUENCY HISTOGRAMS DIGITISED FROM PAPER BY SMJ
+# CUMULATIVE DISTRIBUTIONS CALCULATED BY SMJ
+
+# PALEOCENE N=75
+gmt psxy -R -JX -W3p -K -O <<EOF >> $OUT
+0.00	0.0		0
+0.25	0.0		0
+0.25	18.5	18.5
+0.75	18.5	18.5
+0.75	47.8	29.3
+1.25	47.8	29.3
+1.25	82.5	34.7
+1.75	82.5	34.7
+1.75	93.2	10.7
+2.25	93.2	10.7
+2.25	100.0	6.8
+EOF
+# U CRET N=300
+gmt psxy -R -JX -W3p -K -O <<EOF >> $OUT
+0.00	0.0		0.0
+0.25	0.0		0.0
+0.25	17.0	17.0
+0.75	17.0	17.0
+0.75	88.1	71.1
+1.25	88.1	71.1
+1.25	97.4	9.3
+1.75	97.4	9.3
+1.75	98.1	0.7
+2.25	98.1	0.7
+2.25	98.6	0.5
+2.75	98.6	0.5
+2.75	99.6	1.0
+3.25	99.6	1.0
+3.25	99.6	0.0
+3.75	99.6	0.0
+3.75	100.0	0.4
+EOF
+# L CRET N=70
+gmt psxy -R -JX -W3p -K -O <<EOF >> $OUT
+0.00	8.6		8.6
+0.25	8.6		8.6
+0.25	20.0	11.4
+0.75	20.0	11.4
+0.75	80.1	60.1
+1.25	80.1	60.1
+1.25	85.8	5.7
+1.75	85.8	5.7
+1.75	85.8	0.0
+2.25	85.8	0.0
+2.25	88.6	2.8
+2.75	88.6	2.8
+2.75	91.4	2.8
+3.25	91.4	2.8
+3.25	92.9	1.5
+3.75	92.9	1.5
+3.75	100.0	7.1
+EOF
+
+# ALL N=445
+# CALCULATED BY SMJ FROM THE ABOVE HISTOGRAMS
+gmt psxy -R -JX -W1p,red -K -O <<EOF >> $OUT
+0.00	1.35	1.35	
+0.25	1.35	1.35
+0.25	17.72	16.37
+0.75	17.72	16.37
+0.75	80.04	62.32
+1.25	80.04	62.32
+1.25	93.05	13.01
+1.75	93.05	13.01
+1.75	95.33	2.28
+2.25	95.33	2.28
+2.25	97.25	1.92
+2.75	97.25	1.92
+2.75	98.36	1.11
+3.25	98.36	1.11
+3.25	98.54	0.18
+3.75	98.54	0.18
+3.75	99.92	1.38
+EOF
+
+
+
+
+# AS USED BY SVENSEN ET AL., 2004
+
+awk 'function erf(xx) {xsq=xx*xx; fopi=1.273239545; ca=0.140012; caxsq=ca*xsq; ce=exp(-xsq*(fopi+caxsq)/(1+caxsq)); cs=sqrt(1-ce); if ( xx >= 0) {return cs} else {return -cs}} BEGIN{ pi=3.141592654; for (toc=0.0; toc<=1; toc+=0.001) {c=0.5*(1+erf((toc-0.014)/(0.0044*sqrt(2)))); print 100*toc,100*c}}' | \
+	gmt psxy -R -JX -W3p -Bxa2+u"%" -Bya100f50+u"%" -BWeSn -K -O >> $OUT
+
+# ?
+
+#awk 'function erf(xx) {xsq=xx*xx; fopi=1.273239545; ca=0.140012; caxsq=ca*xsq; ce=exp(-xsq*(fopi+caxsq)/(1+caxsq)); cs=sqrt(1-ce); if ( xx >= 0) {return cs} else {return -cs}} BEGIN{ pi=3.141592654; for (toc=0.0; toc<=1; toc+=0.001) {c=0.5*(1+erf((toc-0.0125)/(0.0075*sqrt(2)))); print 100*toc,100*c}}' | \
+#	gmt psxy -R -JX -W1p,red -Bxa2+u"%" -Bya100f50+u"%" -BWeSn -O >> $OUT
+
+
+echo "3.8 2.1 N=498" | gmt pstext -R0/$WIDTH/0/${HEIGHT} -Jx1 -F+f8p,Helvetica+jRM -N -O >> $OUT
+
+
+# DISPLAY FIGURE
+
+psconvert $OUT -Tf
+open "${OUT%.ps}.pdf"
