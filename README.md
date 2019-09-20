@@ -7,10 +7,10 @@ The primary reference is, "Jones, S. M., Hoggett, M., Greene, S. E. & Dunkley Jo
 
 There are 3 types of data here.
 
-1.  DATASETS of NAIP sill province dimensions that were used to generate the results.  
+* Item 1  DATASETS of NAIP sill province dimensions that were used to generate the results.  
   
-1.1.  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
-File "sill_areas_3D_naip_over10km2.x" (this distribution used for stochastic modelling).\
+* Item 1a  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
+File **sill_areas_3D_naip_over10km2.x** (this distribution used for stochastic modelling).\
 File "sill_areas_2D_naip_corr_over10km2".\
 File "Judd.txt".\
 File "FSB.txt".\
@@ -20,7 +20,7 @@ File "Rockall2D.txt".\
 File "SlyneErris.txt".
 
 
-1.2.  Measurements of sill emplacement depth, Z in km.\
+* Item 1b  Measurements of sill emplacement depth, Z in km.\
 File "emplacement_depth.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4b.  
   
 1.3.  Measurements of maximum thickness, S in m, as a function of measured maximum sill radius, R in km.\
