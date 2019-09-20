@@ -1,0 +1,90 @@
+#!/bin/bash
+
+OUT=./emplacement_depth.ps
+
+#
+
+WIDTH=4
+HEIGHT=2.47
+
+TMIN=5e1
+TMAX=4e4
+QMIN=1e-1
+QMAX=3e1
+
+gmt gmtset MAP_FRAME_TYPE plain
+gmt gmtset MAP_FRAME_PEN 0.5p,black
+gmt gmtset MAP_TICK_LENGTH_PRIMARY 0.1c
+gmt gmtset MAP_TICK_LENGTH_SECONDARY 0.05c
+gmt gmtset MAP_LABEL_OFFSET 0.1c
+gmt gmtset FONT_LABEL 10p
+gmt gmtset FONT_ANNOT_PRIMARY 8p
+
+
+# DATA AS DIGITISED FROM FIG 3.27 IN HOGGETT DISSERTATION 19/04/18 VERSION
+# THERE ARE 30 DEPTH BLOCKS IN 4 KM
+
+cat <<EOF > tmp.dat
+1	1
+2	5
+3	7
+4	19
+5	20
+6	11
+7	8
+8	12
+9	10
+10	19
+11	15
+12	15
+13	13
+14	10
+15	9
+16	7
+17	5
+18	9
+19	1
+20	4
+21	2
+22	1
+23	1
+24	0
+25	1
+26	2
+27	0
+28	1
+29	0
+30	1
+EOF
+awk 'BEGIN{dz=4/30}{dat[NR]=$2; n+=$2; datcum[NR]=n}END{print "N data: ",n}' tmp.dat
+
+
+# THE DATA
+
+awk 'BEGIN{dz=4/30}{dat[NR]=$2; n+=$2; datcum[NR]=n}END{for (i=1; i<=NR; i++) {print (i-1)*dz, 100*datcum[i]/n; print i*dz, 100*datcum[i]/n}}' tmp.dat | \
+	gmt psxy -R0/4/0/100 -JX${WIDTH}/${HEIGHT} -W3p -P -K -X10 -Y10 > $OUT
+
+#	gmt psxy -R0/4/0/100 -JX${WIDTH}/${HEIGHT} -Bxa1+l"km" -Bya100f50+l"Cum %" -BWeSn -W1p,red,- -K -O <<EOF >> $OUT
+#0.5 0
+#3.5 100
+#EOF
+
+awk 'function erf(xx) {xsq=xx*xx; fopi=1.273239545; ca=0.140012; caxsq=ca*xsq; ce=exp(-xsq*(fopi+caxsq)/(1+caxsq)); cs=sqrt(1-ce); if ( xx >= 0) {return cs} else {return -cs}} BEGIN{ pi=3.141592654; zmin=0.5; cmin=0.5*(1+erf((zmin-1.15)/(0.85*sqrt(2)))); print zmin,100*cmin}'
+
+
+# NORMAL DISTRIBUTION
+# RAMPING DOWN TO ZERO BETWEEN 0.5 AND 0.2 KM
+# THIS FIT DONE BY EYE SMJ 24/4/18
+
+awk 'function erf(xx) {xsq=xx*xx; fopi=1.273239545; ca=0.140012; caxsq=ca*xsq; ce=exp(-xsq*(fopi+caxsq)/(1+caxsq)); cs=sqrt(1-ce); if ( xx >= 0) {return cs} else {return -cs}} BEGIN{ pi=3.141592654; zmin=0.5; cmin=0.5*(1+erf((zmin-1.15)/(0.85*sqrt(2)))); print zmin,cmin}'
+awk 'function erf(xx) {xsq=xx*xx; fopi=1.273239545; ca=0.140012; caxsq=ca*xsq; ce=exp(-xsq*(fopi+caxsq)/(1+caxsq)); cs=sqrt(1-ce); if ( xx >= 0) {return cs} else {return -cs}} BEGIN{ pi=3.141592654; zmin=0.25; cmin=0.5*(1+erf((zmin-1.15)/(0.85*sqrt(2)))); print 0.2, 0; print 0.5, 22.221; for (z=0.5; z<4; z+=0.1) {c=0.5*(1+erf((z-1.15)/(0.85*sqrt(2)))); print z,100*c}}' | \
+	gmt psxy -R0/4/0/100 -JX${WIDTH}/${HEIGHT} -Bxa1 -Bya100f50+u"%" -BWeSn -W1p,red -K -O >> $OUT
+
+
+echo "0.2 2.1 N=209" | gmt pstext -R0/$WIDTH/0/${HEIGHT} -Jx1 -F+f8p,Helvetica+jLM -N -O >> $OUT
+
+
+# DISPLAY FIGURE
+
+psconvert $OUT -Tf
+open "${OUT%.ps}.pdf"
