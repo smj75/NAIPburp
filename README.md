@@ -45,3 +45,40 @@ Files are named const_trec_[A]yr_emissions_model_[B]yr.[N], where [A] is the con
 ## 3. RESULTS of greenhouse gas emissions modelling using the NAIP sill measurements and time-dependent tau_repeat, specified by a mantle convection model.  
 
 Files are named emissions_model_[B]yr_q[Q].[N] and sills_model_[B]yr_q[Q].[N], where [B]is the time period over which the measurements are averaged, [Q] is the mantle plume area flux, and [N] is the stochastic run number.  
+
+The columns in each *emissions_model* file are:
+1.  Time relative to first sill
+2.  Total carbon flux at this time step
+3.  Carbon flux from thermogenic methane at this time step
+4.  Carbon flux from CO2 degassed from sill magma at this time step
+5.  Carbon flux from CO2 degassed from lavas at this time step
+6.  Fraction of total carbon supplied as thermogenic methane at this time step
+7.  Total cumulative carbon mass up to this time
+8.  Carbon mass from thermogenic methane up to this time
+9.  Carbon mass from CO2 degassed from sill magma up to this time
+10.  Carbon mass from CO2 degassed from lavas up to this time
+11.  Cumulative Carbon isotope composition of all carbon emitted from province
+12.  Carbon isotope composition of thermogenic+mantle emissions at this time step
+13.  Sill recurrence time
+14.  Absolute age
+15.  Long radius of mantle thermal anomaly marker
+16.  Time step number (= sill number)
+17.  Mean carbon flux from thermogenic methane at this time step
+
+The columns in each *sills_model* file are:
+1. INTRUSION TIME (relative to a reference point in the mantle plume head model)
+2. TOTAL MASS PER UNIT SURFACE AREA
+3. TOTAL MASS OF CO2 DEGASSED FROM MAGMA
+4. MATURATION DECAY TIME
+5. TIME TO ESTABLISHMENT OF VENT
+6. TIME TO SOLIDIFICATION OF MAGMA
+7. TIME AFTER PULSE LEFT PLUME CENTRE
+8. SILL RECURRENCE TIME
+9. MAXIMUM PULSE RADIUS
+10. SILL LOCATION RADIUS
+11. SILL LOCATION AZIMUTH
+12. NUMBER OF OVERLAPPING SILLS
+13. OVERLAPPED PERCENTAGE OF AUREOLE FOOTPRINT, THIS SILL
+14. OVERLAPPED PERCENTAGE OF AUREOLE VOLUME, THIS SILL
+15. OVERLAPPED PERCENTAGE OF AUREOLE FOOTPRINT, WHOLE PROVINCE
+16. OVERLAPPED PERCENTAGE OF AUREOLE VOLUME, WHOLE PROVINCE
