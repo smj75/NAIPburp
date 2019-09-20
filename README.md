@@ -10,18 +10,18 @@ There are 3 types of data here.
 1.  DATASETS of NAIP sill province dimensions that were used to generate the results.  
   
   1.  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
-File **sill_areas_3D_naip_over10km2.x** (this distribution used for stochastic modelling).\
-File "sill_areas_2D_naip_corr_over10km2".\
-File "Judd.txt".\
-File "FSB.txt".\
-File "More.txt".\
-File "IrishRockall.txt".\
-File "Rockall2D.txt".\
-File "SlyneErris.txt".
+**sill_areas_3D_naip_over10km2.x** (this distribution used for stochastic modelling).\
+**sill_areas_2D_naip_corr_over10km2**\
+**Judd.txt**\
+**FSB.txt**\
+**More.txt**\
+**IrishRockall.txt**\
+**Rockall2D.txt**\
+**SlyneErris.txt**.
 
 
   1.  Measurements of sill emplacement depth, Z in km.\
-File "emplacement_depth.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4b.  
+**emplacement_depth.gmt** contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4b.  
   
   1.  Measurements of maximum thickness, S in m, as a function of measured maximum sill radius, R in km.\
 File "thickness_diameter.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4c.  
