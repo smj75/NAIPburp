@@ -34,10 +34,15 @@ Used in Jea19, Fig. 4a.\
 *host_toc.gmt* contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4e.  
 
 ### Parameterisation of (M_therm, tau_decay, p) as functions of (s, Z) used to simulate emissions from individual sills
-*aureole_parameterisation.txt* records the data in the format needed by *smj75/LIPburp/dim2mpt.awk*.  See smj75/sillburp* for calculation method.
+*aureole_parameterisation.txt* records the parameterisation in the format needed by *smj75/LIPburp/dim2mpt.awk*.  See smj75/sillburp* for calculation method.
+
+### Area function, Gamma
+*dadr_ellipse_deepchain_max_72.awk* is the function used for all calculations in Jea19 in the format needed by *smj75/LIPburp/LIP_emission_model.awk*.
 
 
 ## 2. RESULTS of greenhouse gas emissions modelling using the NAIP sill measurements and constant values of tau_repeat, the time between intrusion of successive sills
+
+These results were used in Fig. 5 of Jea19.
 
 Files are named const_trec_[A]yr_emissions_model_[B]yr.[N], where [A] is the constant value of tau_repeat, [B] is the time period over which the measurements are averaged, and [N] is the stochastic run number.  
 
@@ -45,8 +50,9 @@ The columns in each *emissions_model* file are as below.
 
 
 
+## 3. RESULTS of greenhouse gas emissions modelling using the NAIP sill measurements and time-dependent tau_repeat, specified by a mantle convection model  
 
-## 3. RESULTS of greenhouse gas emissions modelling using the NAIP sill measurements and time-dependent tau_repeat, specified by a mantle convection model.  
+These results were used in Fig. 8 of Jea19.
 
 Files are named *emissions_model_[B]yr_q[Q].[N]* and *sills_model_[B]yr_q[Q].[N]*, where [B]is the time period over which the measurements are averaged, [Q] is the mantle plume area flux, and [N] is the stochastic run number.  
 
