@@ -9,22 +9,14 @@ There are 3 types of data here.
 
 1.  DATASETS of NAIP sill province dimensions that were used to generate the results.  
   
-1.1  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).
-
-File "sill_areas_3D_naip_over10km2.x".
-
-File "sill_areas_2D_naip_corr_over10km2".
-
-File "Judd.txt".
-
-File "FSB.txt".
-
-File "More.txt".
-
-File "IrishRockall.txt".
-
-File "Rockall2D.txt".
-
+1.1  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
+File "sill_areas_3D_naip_over10km2.x".\
+File "sill_areas_2D_naip_corr_over10km2".\
+File "Judd.txt".\
+File "FSB.txt".\
+File "More.txt".\
+File "IrishRockall.txt".\
+File "Rockall2D.txt".\
 File "SlyneErris.txt".
 
 
