@@ -9,8 +9,8 @@ There are 3 types of data here.
 
 1.  DATASETS of NAIP sill province dimensions that were used to generate the results.  
   
-  1.1  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
-File "sill_areas_3D_naip_over10km2.x".\
+1.1.  Measurements of sill surface area, A in km2 (e.g. Jea19, Fig. 4a).\
+File "sill_areas_3D_naip_over10km2.x" (this distribution used for stochastic modelling).\
 File "sill_areas_2D_naip_corr_over10km2".\
 File "Judd.txt".\
 File "FSB.txt".\
@@ -20,15 +20,20 @@ File "Rockall2D.txt".\
 File "SlyneErris.txt".
 
 
-1.2.  Measurements of sill emplacement depth, Z in km.
+1.2.  Measurements of sill emplacement depth, Z in km.\
+File "emplacement_depth.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4b.  
   
-1.3.  Measurements of maximum thickness, S in m, as a function of measured maximum sill radius, R in km.  
+1.3.  Measurements of maximum thickness, S in m, as a function of measured maximum sill radius, R in km.\
+File "thickness_diameter.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4c.  
   
-1.4.  Measurements of sill thickness, s in m, as a function of distance from sill centre, r in km.
+1.4.  Measurements of sill thickness, s in m, as a function of distance from sill centre, r in km.\
+File "thickness_profile.gmt" contains the data, the approximations used in stochastic modelling and the plotting script for Jea19, Fig. 4d.  
 
-1.4.  Host rock TOC measurements, w_CH4, in %.  
+1.5.  Host rock TOC measurements, w_CH4, in %.\
+File "host_toc.gmt" contains the data, the approximation used in stochastic modelling and the plotting script for Jea19, Fig. 4e.  
 
-1.5.  Parameterisation of (M_therm, tau_decay, p) as functions of (s, Z) used to simulate emissions from individual sills.
+1.6.  Parameterisation of (M_therm, tau_decay, p) as functions of (s, Z) used to simulate emissions from individual sills.\
+File "aureole_parameterisation.txt".
 
 
 2. RESULTS of greenhouse gas emissions modelling using the NAIP sill measurements and constant values of tau_repeat, the time between intrusion of successive sills.  
