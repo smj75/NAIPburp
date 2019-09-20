@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# PLOT SILL THICKNESS VERSUS DIAMETER
+
+OUT=./thickness_diameter.ps
+
+WIDTH=4
+HEIGHT=2.47
+
+TMIN=5e1
+TMAX=4e4
+QMIN=1e-1
+QMAX=3e1
+
+gmt gmtset MAP_FRAME_TYPE plain
+gmt gmtset MAP_FRAME_PEN 0.5p,black
+gmt gmtset MAP_TICK_LENGTH_PRIMARY 0.1c
+gmt gmtset MAP_TICK_LENGTH_SECONDARY 0.05c
+gmt gmtset MAP_LABEL_OFFSET 0.2c
+gmt gmtset FONT_LABEL 10p
+gmt gmtset FONT_ANNOT_PRIMARY 8p
+
+
+# DATA AS DIGITISED FROM FIG 3.22 IN HOGGETT PHD DISSERTATION 19/04/18 VERSION
+
+# THE DATA
+
+cat <<EOF > thickness_diameter.txt
+1.366	59.625
+3.166	62.868
+2.660	126.009
+2.255	169.412
+3.717	125.355
+4.947	125.704
+3.413	187.859
+2.604	250.566
+2.805	250.215
+3.375	250.598
+4.215	178.623
+5.140	150.096
+5.289	144.198
+4.543	250.487
+4.910	250.262
+5.307	250.080
+6.565	250.039
+5.129	195.855
+5.635	165.610
+6.874	130.218
+8.092	122.014
+8.428	119.807
+7.074	170.842
+7.298	184.070
+7.201	188.117
+8.776	140.855
+8.771	156.967
+10.764	125.097
+8.951	188.115
+8.422	250.449
+7.141	350.523
+9.112	375.485
+9.974	300.158
+9.915	375.686
+11.794	225.305
+12.459	375.304
+15.005	187.630
+16.964	250.454
+19.460	312.893
+16.109	625.618
+23.416	438.029
+EOF
+
+gmt psxy thickness_diameter.txt -R0/25/0/650 -JX${WIDTH}/${HEIGHT} -Bxa20+u" km" -Bya1000+u" m" -BWS -Sc0.2 -Gblack -P -K -X10 -Y10 > $OUT
+
+wc -l thickness_diameter.txt 
+
+
+awk 'BEGIN{for (d=0; d<=25; d+=1) {print d,120.2+12.84*d}}' | \
+	gmt psxy -R -JX -W1p,red -K -O >> $OUT
+awk 'BEGIN{for (d=0; d<=25; d+=1) {print d,20.2+12.84*d}}' | \
+	gmt psxy -R -JX  -W0.5p,red,- -K -O >> $OUT
+awk 'BEGIN{for (d=0; d<=25; d+=1) {print d,220.2+12.84*d}}' | \
+	gmt psxy -R -JX -W0.5p,red,- -K -O >> $OUT
+
+
+gmt psbasemap -R -JX -Bxa10 -Bya200 -BWeSn -O >> $OUT
+
+
+#echo "0.2 2.1 N=41" | gmt pstext -R0/$WIDTH/0/${HEIGHT} -Jx1 -F+f8p,Helvetica+jLM -N -O >> $OUT
+
+
+# DISPLAY FIGURE
+
+psconvert $OUT -Tf
+open "${OUT%.ps}.pdf"
