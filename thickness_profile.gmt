@@ -1,0 +1,130 @@
+#!/bin/bash
+
+OUT=./thickness_profile.ps
+
+#
+
+WIDTH=4
+HEIGHT=2.47
+
+TMIN=5e1
+TMAX=4e4
+QMIN=1e-1
+QMAX=3e1
+
+gmt gmtset MAP_FRAME_TYPE plain
+gmt gmtset MAP_FRAME_PEN 0.5p,black
+gmt gmtset MAP_TICK_LENGTH_PRIMARY 0.1c
+gmt gmtset MAP_TICK_LENGTH_SECONDARY 0.05c
+gmt gmtset MAP_LABEL_OFFSET 0.2c
+gmt gmtset FONT_LABEL 10p
+gmt gmtset FONT_ANNOT_PRIMARY 8p
+
+
+# DATA SOURCE: MURRAY HOGGETT, A GLOBAL ANALYSIS OF IGNEOUS SILL DIMENSIONS AND THEIR EFFECT ON SEDIMENTARY BASINS AND PETROLEUM SYSTEMS: STATISTICS AND MODELLING OF SEISMIC OBSERVATIONS, UNPUBLISHED PHD DISSERTATION, UNIVERSITY OF BIRMINGHAM, 2019.  
+
+# THE DATA
+
+# MEAN OF 10 PROFILES FROM FORCED FOLDS
+
+cat <<EOF > tmp.mean.fold.prof
+5 10.866 5.6599 10
+10 20.6558 9.73213 10
+15 30.4839 12.573 10
+20 39.6183 15.3155 10
+25 47.8022 16.0569 10
+30 55.0568 15.6161 10
+35 62.9899 13.3023 10
+40 69.7872 11.4214 10
+45 75.1076 10.7398 10
+50 78.5145 11.3408 10
+55 81.8636 10.9498 10
+60 83.9199 9.2142 10
+65 86.6732 7.52557 10
+70 89.6545 5.26139 10
+75 90.7533 5.11486 10
+80 92.1571 4.59862 10
+85 94.0702 3.48991 10
+90 96.016 2.33339 10
+95 98.2244 1.40153 10
+EOF
+
+# MEAN OF 10 PROFILES OF SILL THICKNESS 
+
+cat <<EOF > tmp.mean.sill.prof
+10 44.0394 0 1
+15 31.1298 22.3177 2
+20 39.5715 27.7705 2
+25 58.1639 40.1283 2
+30 68.515 41.5845 5
+35 71.1707 36.4394 5
+40 68.2951 30.3097 7
+45 67.0161 21.1062 7
+50 74.8077 15.0531 9
+55 81.9385 20.4905 9
+60 89.4792 26.716 10
+65 92.761 25.6881 10
+70 97.0598 21.0838 10
+75 100.842 21.7539 10
+80 104.423 17.914 10
+85 105.598 16.9847 10
+90 108.266 15.7692 10
+95 113.012 12.8905 10
+EOF
+
+# PLOTTING
+
+gmt psbasemap -R0/100/0/100 -JX${WIDTH}/${HEIGHT} -Bxa100f50+u"%" -Bya100f50+u"%" -BWeSn -P -K -X10 -Y10 > $OUT
+
+
+awk '{print 100-$1,$2+$3}' ./tmp.mean.sill.prof > tmp.env
+awk '{print 100-$1,$2-$3}' ./tmp.mean.sill.prof | tail -r >> tmp.env
+gmt psxy tmp.env -R -JX -Gdarkgray -O -K >> $OUT 
+
+awk '{print 100-$1,$2+$3}' ./tmp.mean.fold.prof > tmp.env
+awk '{print 100-$1,$2-$3}' ./tmp.mean.fold.prof | tail -r >> tmp.env
+gmt psxy tmp.env -R -JX -Glightgray -O -K >> $OUT 
+
+
+
+
+#awk 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(1/2)}; print 100,0}' | \
+#	gmt psxy -R -JX -W1p,red -K -O >> $OUT
+#awk 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(1/0.8)}; print 100,0}' | \
+#	gmt psxy -R -JX -W1p,red -K -O >> $OUT
+
+POWERS="0.8 1.0 1.2 1.4 1.6 1.8 2.0"
+POWERS="0.5 0.6875 0.875 1.0625 1.25"
+PROBS="0 0.01 0.05 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.95 0.99 1"
+
+echo -n "Median power: "
+awk -v prob=0.5 'BEGIN{mean=0.85; sd=0.3; mu=log(mean/sqrt(1+sd*sd/mean/mean)); sig=sqrt(log(1+sd*sd/mean/mean)); p = exp( mu + sig * sqrt(2) * erfinv(2 * prob - 1) ); print p} function erfinv(xx) {lomxsq=log(1-xx*xx); ca=0.140012; topi=0.636619772; topia=topi/ca; b=topia+0.5*lomxsq; b2=b*b;	sr1=sqrt(b2-lomxsq/ca); sr2=sqrt(sr1-b); if ( xx >= 0) {return sr2} else {return -sr2}; }'
+awk 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(0.801542)}; print 100,0}' | \
+	gmt psxy -R -JX -W1p,red -K -O >> $OUT
+echo -n "Lower quartile power: "
+awk -v prob=0.25 'BEGIN{mean=0.85; sd=0.3; mu=log(mean/sqrt(1+sd*sd/mean/mean)); sig=sqrt(log(1+sd*sd/mean/mean)); p = exp( mu + sig * sqrt(2) * erfinv(2 * prob - 1) ); print p} function erfinv(xx) {lomxsq=log(1-xx*xx); ca=0.140012; topi=0.636619772; topia=topi/ca; b=topia+0.5*lomxsq; b2=b*b;	sr1=sqrt(b2-lomxsq/ca); sr2=sqrt(sr1-b); if ( xx >= 0) {return sr2} else {return -sr2}; }'
+awk 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(0.636155)}; print 100,0}' | \
+	gmt psxy -R -JX -W1p,red,- -K -O >> $OUT
+echo -n "Upper quartile power: "
+awk -v prob=0.75 'BEGIN{mean=0.85; sd=0.3; mu=log(mean/sqrt(1+sd*sd/mean/mean)); sig=sqrt(log(1+sd*sd/mean/mean)); p = exp( mu + sig * sqrt(2) * erfinv(2 * prob - 1) ); print p} function erfinv(xx) {lomxsq=log(1-xx*xx); ca=0.140012; topi=0.636619772; topia=topi/ca; b=topia+0.5*lomxsq; b2=b*b;	sr1=sqrt(b2-lomxsq/ca); sr2=sqrt(sr1-b); if ( xx >= 0) {return sr2} else {return -sr2}; }'
+awk 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(1.00993)}; print 100,0}' | \
+	gmt psxy -R -JX -W1p,red,- -K -O >> $OUT
+echo -n "Mu, Sig: "
+awk -v prob=$P 'BEGIN{mean=0.85; sd=0.3; mu=log(mean/sqrt(1+sd*sd/mean/mean)); sig=sqrt(log(1+sd*sd/mean/mean)); p = exp( mu + sig * sqrt(2) * erfinv(2 * prob - 1) ); print mu, sig} function erfinv(xx) {lomxsq=log(1-xx*xx); ca=0.140012; topi=0.636619772; topia=topi/ca; b=topia+0.5*lomxsq; b2=b*b;	sr1=sqrt(b2-lomxsq/ca); sr2=sqrt(sr1-b); if ( xx >= 0) {return sr2} else {return -sr2}; }'
+
+for P in $PROBS
+do
+	POWER=`awk -v prob=$P 'BEGIN{mean=0.85; sd=0.3; mu=log(mean/sqrt(1+sd*sd/mean/mean)); sig=sqrt(log(1+sd*sd/mean/mean)); p = exp( mu + sig * sqrt(2) * erfinv(2 * prob - 1) ); print p} function erfinv(xx) {lomxsq=log(1-xx*xx); ca=0.140012; topi=0.636619772; topia=topi/ca; b=topia+0.5*lomxsq; b2=b*b;	sr1=sqrt(b2-lomxsq/ca); sr2=sqrt(sr1-b); if ( xx >= 0) {return sr2} else {return -sr2}; }'`
+#	awk -v p=$POWER 'BEGIN{for (r=0; r<=1; r+=0.01) {print 100*r,100*(1-r^2)^(p)}; print 100,0}' | \
+#		gmt psxy -R -JX -W0.2p,royalblue -K -O >> $OUT
+done
+
+
+
+echo "0.2 2.1 N=10" | gmt pstext -R0/$WIDTH/0/${HEIGHT} -Jx1 -F+f8p,Helvetica+jLM -N -O >> $OUT
+
+
+# DISPLAY FIGURE
+
+psconvert $OUT -Tf
+open "${OUT%.ps}.pdf"
